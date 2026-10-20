@@ -157,7 +157,7 @@ Run Neon Grid locally before making changes or deploying your own version.
 Replace the repository URL below with the HTTPS URL of this GitHub repository.
 
 ```bash
-git clone <YOUR_GITHUB_REPOSITORY_URL>
+git clone </github.com/ojas-v/neon-grid-gaming-hub>
 cd neon-grid-gaming-hub
 ```
 
