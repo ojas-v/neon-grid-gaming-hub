@@ -1,0 +1,412 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Coding via Gaming – Learn Python by Playing</title>
+<style>
+:root{--line:#304363;--muted:#a9b9d5;--mint:#6ee7b7;--gold:#fcd34d;--rose:#fda4af;--cyan:#67e8f9}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(ellipse at top,#26346b,#0b1020 60%,#060913);color:#edf4ff;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;min-height:100vh}
+main{max-width:1050px;margin:auto;padding:16px}
+h1{margin:0;font-size:clamp(1.5rem,4vw,2.3rem)}h2,h3{margin:0 0 8px}p{line-height:1.5;color:#d6e1f5;margin:6px 0}
+.muted{color:var(--muted)}
+.top{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.pill{border:1px solid var(--line);background:#121b30;border-radius:99px;padding:6px 12px;color:var(--gold);font-weight:700}
+.dots{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+.dot{padding:7px 12px;border-radius:99px;border:1px solid var(--line);background:#121b30;color:var(--muted);cursor:pointer;font-weight:700;font-size:.85rem}
+.dot.on{border-color:var(--mint);color:#fff;background:#123a3a}.dot.lock{opacity:.35;cursor:not-allowed}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.panel{background:linear-gradient(145deg,#17223b,#10172a);border:1px solid var(--line);border-radius:16px;padding:16px}
+button,select{font:inherit}
+button{cursor:pointer;border:0;border-radius:10px;padding:10px 14px;font-weight:800;color:#071323;background:linear-gradient(100deg,#6ee7b7,#67e8f9)}
+button.sec{background:#1e2b46;color:#fff;border:1px solid #425779}
+button:disabled{opacity:.4;cursor:not-allowed}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;align-items:center}
+.g{display:grid;grid-template-columns:repeat(6,1fr);gap:4px;max-width:400px;margin:10px auto}
+.c{aspect-ratio:1;background:#0b1427;border:1px solid #2a416b;border-radius:8px;display:grid;place-items:center;font-size:clamp(1.1rem,3.5vw,1.7rem);position:relative}
+.c.bot{background:#123a3a;border-color:var(--mint)}.c i{position:absolute;right:2px;bottom:0;font-size:.7rem;font-style:normal}
+.arena{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:10px 0}
+.mon{background:#0b1427;border:1px solid #2a416b;border-radius:12px;text-align:center;padding:12px 4px;transition:.2s}
+.mon.cur{border-color:var(--gold);transform:scale(1.04)}.mon.dead{background:#103b30;border-color:#34d399}.mon.res{background:#451c2b;border-color:#fb7185}
+.big{font-size:2.4rem}
+.cons{background:#050a19;border:1px solid #2a416b;border-radius:10px;padding:8px;height:110px;overflow:auto;font:.8rem ui-monospace,Consolas,monospace;color:#a5f3fc}
+#code{background:#050a19;border:1px solid #2a416b;border-radius:10px;padding:10px 4px;margin:8px 0;font:.9rem ui-monospace,Consolas,monospace;overflow-x:auto}
+.ln{white-space:pre;padding:3px 8px;border-left:3px solid transparent;color:#e2ecff}
+.ln.hl{background:#173a52;border-left-color:var(--gold)}
+.ln .n{color:#53688f;display:inline-block;width:22px}
+.ln .kw{color:#f0abfc}
+select{background:#1b2948;color:var(--gold);border:1px dashed var(--gold);border-radius:6px;padding:3px 4px;font:inherit}
+.box{padding:12px;border:1px solid #354b70;background:#0b1427;border-radius:12px;margin:10px 0}
+.good{border-color:#34d399}.bad{border-color:#fb7185}
+.story{border-left:4px solid var(--cyan);padding-left:10px}
+.badges{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:12px 0}
+.vars{display:grid;gap:6px;margin:10px 0}
+.var{display:flex;justify-content:space-between;gap:10px;background:#0b1427;border:1px solid #2a416b;border-radius:10px;padding:10px;font:.9rem ui-monospace,Consolas,monospace}
+.var span{color:var(--gold)}.var b{white-space:pre;color:#a5f3fc;overflow-wrap:anywhere;text-align:right}
+.var.new{border-color:var(--mint);background:#123a3a}
+.board{width:100%;border-collapse:collapse;margin:8px 0;font-size:.8rem}
+.board th{color:var(--cyan);font-size:.7rem;text-align:center;padding:4px 2px;border-bottom:1px solid #2c3d5b}
+.board td{text-align:center;padding:6px 2px;border-bottom:1px solid #1d2c47;transition:.3s}
+.board td:first-child{text-align:left;font-weight:700}
+.board tr.dim{opacity:.28}.board tr.hot{background:#451c2b;box-shadow:inset 0 0 0 1px #fb7185}
+#menu{display:none}
+.mgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:12px}
+.mcard{background:linear-gradient(145deg,#17223b,#10172a);border:1px solid var(--line);border-radius:14px;padding:14px;cursor:pointer;transition:.15s}
+.mcard:hover{transform:translateY(-3px);border-color:var(--mint)}
+.mcard.final{border-color:var(--gold);background:linear-gradient(145deg,#3b2a17,#17101a)}
+.mcard .ic{font-size:2rem}.mcard .st{color:var(--gold);min-height:1.3em;margin-top:6px}
+@media(max-width:860px){.cols{grid-template-columns:1fr}.mgrid{grid-template-columns:1fr}}
+</style></head><body><main>
+<div class="top"><div><h1>🤖 CODING VIA GAMING</h1><div class="muted">Learn Python by playing — your code runs the game.</div></div><div class="pill" id="tot">⭐ 0 / 27</div></div>
+<div class="dots" id="dots"></div>
+<div id="menu" class="panel"><h2>🎮 Choose your game</h2><div class="muted">Every level is open — jump in anywhere, in any order.</div><div class="mgrid" id="mgrid"></div></div>
+<div id="play" class="cols">
+ <div class="panel"><div class="story" id="story"></div><div id="stage"></div><div class="muted" style="font-size:.8rem">Console output</div><div class="cons" id="cons"></div></div>
+ <div class="panel"><h3 id="lt"></h3><div class="muted" id="concept"></div><div id="code"></div>
+  <div class="row"><button id="runB" onclick="run()">▶ RUN CODE</button><button class="sec" onclick="resetStage()">↺ Reset</button><button class="sec" onclick="menu()">☰ All levels</button><button class="sec" onclick="hint()">💡 Hint</button>
+  <select id="spd" style="color:#fff;border-style:solid;border-color:#425779"><option value="420">Slow</option><option value="220" selected>Normal</option><option value="70">Fast</option></select></div>
+  <div id="msg"></div></div>
+</div>
+<div id="end" class="panel hidden" style="display:none"></div>
+</main>
+<script>
+const $=id=>document.getElementById(id);
+const esc=t=>t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+const MV=['move()','turn_left()','turn_right()'];
+const DX=[1,0,-1,0],DY=[0,1,0,-1],DN=['east','south','west','north'],AR=['➡️','⬇️','⬅️','⬆️'];
+const MON=[{k:'goblin',e:'👺',n:'Goblin'},{k:'ghost',e:'👻',n:'Ghost'},{k:'dragon',e:'🐲',n:'Dragon'}];
+
+/* ---- tiny robot simulator (records every step so we can replay it) ---- */
+function sim(L){
+ const s={x:0,y:0,d:0,ev:[],got:[],bumps:0};
+ s.wall=()=>{const nx=s.x+DX[s.d],ny=s.y+DY[s.d];return nx<0||ny<0||nx>5||ny>5};
+ s.rec=(l,m)=>s.ev.push({l,m,x:s.x,y:s.y,d:s.d,got:[...s.got]});
+ s.mv=l=>{
+  if(s.wall()){s.bumps++;s.rec(l,'move() → 💥 wall! still at ('+s.x+','+s.y+')');return}
+  s.x+=DX[s.d];s.y+=DY[s.d];
+  if((L.stars||[]).some(a=>a[0]===s.x&&a[1]===s.y)&&!s.got.includes(s.x+','+s.y))s.got.push(s.x+','+s.y);
+  s.rec(l,'move() → ('+s.x+','+s.y+')');
+ };
+ s.tr=l=>{s.d=(s.d+1)%4;s.rec(l,'turn_right() → facing '+DN[s.d])};
+ s.tl=l=>{s.d=(s.d+3)%4;s.rec(l,'turn_left() → facing '+DN[s.d])};
+ return s;
+}
+const fin=(s,L)=>{
+ if(s.x===L.goal[0]&&s.y===L.goal[1])return[true];
+ return[false,`The robot stopped at (${s.x},${s.y}) but the 🏁 is at (${L.goal[0]},${L.goal[1]}).${s.bumps?' It bumped into a wall '+s.bumps+'×.':''} Change a slot and run again.`];
+};
+
+const WORDS={python:'🐍 a slithery language',string:'🧵 text in code',float:'🎈 a number with a decimal point',random:'🎲 makes every run different',module:'📦 a file of ready-made code'};
+const shuf=a=>{const J=[...a];for(let i=J.length-1;i>0;i--){const k=Math.floor(Math.random()*(i+1));[J[i],J[k]]=[J[k],J[i]]}return J};
+const PPL=[['Mira','Archive',10,true],['Leo','Gallery',40,true],['Nina','Gallery',27,true],['Omar','Gallery',45,false],['Priya','Vault',38,true],['Quinn','Archive',50,false],['Ravi','Gallery',33,false],['Sana','Lobby',35,true]];
+/* ---- the levels ---- */
+const LV=[
+{name:'Statements',badge:'Statements',concept:'Python runs lines top → bottom, one at a time.',type:'grid',goal:[3,2],walls:[],
+ story:'🔰 <b>Level 1.</b> The robot wakes up at the top-left facing east. Reach the 🏁. A program is just a list of instructions — the <b>order</b> matters!',
+ code:['{0}','{1}','{2}','{3}','{4}','{5}'],opts:Array(6).fill(MV),
+ hint:'East ×3 (three moves), then turn_right() to face south, then two more moves.',
+ learn:'Each line is a <b>statement</b>. Python executes them in order — swap two lines and the robot ends up somewhere else. (move() and turn_right() are functions we gave the robot; calling a function = writing its name with <code>()</code>.)',
+ run:(v,s,L)=>{v.forEach((c,i)=>({'move()':s.mv,'turn_left()':s.tl,'turn_right()':s.tr})[c](i));return fin(s,L)}},
+{name:'Variables',badge:'Variables',concept:'A variable is a named box that stores a value.',type:'grid',goal:[3,3],walls:[],
+ story:'📦 <b>Level 2.</b> The 🏁 is exactly the same distance east and south. Store that distance in a <b>variable</b> and use it twice — change it once, both moves change!',
+ code:['distance = {0}','move(distance)','turn_right()','move(distance)'],opts:[['1','2','3','4','5']],
+ hint:'The flag is at column 3, row 3 — so how far must each leg be?',
+ learn:'<code>distance = 3</code> creates a variable. Writing <code>distance</code> later gives back 3. Variables let you change one number instead of editing many lines.',
+ run:(v,s,L)=>{const d=+v[0];s.rec(0,'distance = '+d);for(let i=0;i<d;i++)s.mv(1);s.tr(2);for(let i=0;i<d;i++)s.mv(3);return fin(s,L)}},
+{name:'for loops',badge:'for loops',concept:'A loop repeats the same lines many times.',type:'grid',goal:[4,4],walls:[],stars:[[1,1],[2,2],[3,3]],
+ story:'🔁 <b>Level 3.</b> Climb the diagonal staircase to the 🏁, collecting ⭐. Four stairs would need 16 lines — a <b>for loop</b> does it in 5.',
+ code:['for i in range({0}):','    move()','    turn_right()','    move()','    turn_left()'],opts:[['2','3','4','5','6']],
+ hint:'Each repeat = 1 stair (right + down). The flag is 4 stairs from the start.',
+ learn:'<code>for i in range(4):</code> runs the indented block 4 times. The indentation (4 spaces) is how Python knows which lines belong to the loop.',
+ run:(v,s,L)=>{const n=+v[0];for(let i=0;i<n;i++){s.rec(0,'loop: i = '+i);s.mv(1);s.tr(2);s.mv(3);s.tl(4)}return fin(s,L)}},
+{name:'if / else',badge:'if / else',concept:'if lets the program make decisions.',type:'grid',goal:[5,5],walls:[],
+ story:'🧠 <b>Level 4.</b> No more counting steps! The robot must decide <i>by itself</i>: keep walking, but when a wall is ahead, turn. Complete the <b>if / else</b> so it reaches the 🏁 in the far corner.',
+ code:['for step in range(12):','    if {0}:','        {1}','    else:','        {2}'],
+ opts:[['wall_ahead()','not wall_ahead()','step > 5'],['turn_right()','move()','turn_left()'],['move()','turn_right()','turn_left()']],
+ hint:'If a wall is ahead → turn. Otherwise → move.',
+ learn:'<code>if condition:</code> runs the first block only when the condition is True; otherwise <code>else:</code> runs. Conditions are True/False questions. This is how programs react to data.',
+ run:(v,s,L)=>{const f={'move()':s.mv,'turn_left()':s.tl,'turn_right()':s.tr};
+  for(let st=0;st<12;st++){s.rec(0,'step = '+st);
+   const c=v[0]==='wall_ahead()'?s.wall():v[0]==='not wall_ahead()'?!s.wall():st>5;
+   s.rec(1,v[0]+' is '+(c?'True':'False'));f[c?v[1]:v[2]](c?2:4)}
+  return fin(s,L)}},
+{name:'Random & strings',badge:'random & strings',concept:'random makes every run different; a string can be split into letters and glued back.',type:'word',
+ story:'🧙 <b>Level 5.</b> The Word Wizard scrambles a secret programming word every time he casts his spell. Complete the spell with <b>random</b> and <b>string tools</b>, then unscramble <b>3 words</b> in a row. Each word comes with an emoji clue — and every cast is different!',
+ code:['import random','words = ["python", "string", "float", "random", "module"]','word = random.{0}(words)','letters = {1}(word)','random.{2}(letters)','jumbled = "".{3}(letters)','print(jumbled.upper())'],
+ opts:[['choice','shuffle','randint'],['list','len','str'],['shuffle','choice','sort'],['join','split','append']],
+ hint:'Pick ONE random item → choice. Turn a string into a list of letters → list. Reorder randomly → shuffle. Glue letters back into a string → join.',
+ learn:'<code>random.choice(list)</code> picks one item and <code>random.shuffle(list)</code> reorders a list in place (it returns nothing). A string cannot be shuffled directly, so <code>list(word)</code> splits it into letters and <code>"".join(letters)</code> glues them back. Your clue buttons were string tools too: <code>word[0]</code>, <code>word[:2]</code> (slice) and <code>len(word)</code>.',
+ run:(v,s)=>{
+  const W=Object.keys(WORDS),T=(l,m,t)=>s.ev.push({l,m,tiles:t||[]});
+  T(0,'import random → random tools loaded');T(1,'words = ["python", "string", "float", "random", "module"]');
+  if(v[0]!=='choice'){
+   T(2,v[0]==='shuffle'?'word = random.shuffle(words) → None   (shuffle returns nothing!)':'❌ TypeError: randint() missing 1 required positional argument');
+   return[false,v[0]==='shuffle'?'<code>random.shuffle()</code> reorders a list but returns <b>None</b>, so <code>word</code> ends up empty. To pick ONE random item you need a different random function.':'<code>randint()</code> needs two numbers, like <code>randint(1, 6)</code>. To pick a random <i>item from a list</i> there is a better function.'];
+  }
+  const word=W[Math.floor(Math.random()*W.length)],Ls=[...word],q=a=>'['+a.map(c=>"'"+c+"'").join(', ')+']';
+  T(2,`word = random.choice(words) → "${word}"`);
+  if(v[1]!=='list'){
+   T(3,v[1]==='len'?'letters = len(word) → '+word.length+'   (just a number!)':'letters = str(word) → "'+word+'"   (still a string)');
+   T(4,v[1]==='len'?"❌ TypeError: object of type 'int' has no len()":"❌ TypeError: 'str' object does not support item assignment");
+   return[false,v[1]==='len'?'<code>len(word)</code> only gives the <i>number</i> of letters. You need the letters themselves, as a list.':'A string is <b>immutable</b> — you cannot reorder it in place. Convert it into a <i>list</i> of letters first.'];
+  }
+  T(3,'letters = list(word) → '+q(Ls),Ls);
+  if(v[2]!=='shuffle'){
+   if(v[2]==='choice'){T(4,"random.choice(letters) → '"+Ls[Math.floor(Math.random()*Ls.length)]+"'   (letters unchanged!)",Ls);return[false,'<code>random.choice()</code> only <i>picks one</i> letter — the list stays in the same order, so nothing gets scrambled.']}
+   T(4,"❌ AttributeError: module 'random' has no attribute 'sort'",Ls);
+   return[false,'The random module has no <code>sort()</code>. Sorting means putting things in order — you want the opposite: a random reordering.'];
+  }
+  let J;do{J=shuf(Ls)}while(J.join('')===word);
+  T(4,'random.shuffle(letters) → '+q(J),J);
+  if(v[3]!=='join'){
+   T(5,v[3]==='split'?'❌ TypeError: must be str or None, not list':"❌ AttributeError: 'str' object has no attribute 'append'",J);
+   return[false,v[3]==='split'?'<code>split()</code> breaks a string <i>into</i> a list. You need the opposite: glue a list of letters <i>into</i> one string.':'<code>append()</code> belongs to lists. Which string method glues the items of a list together?'];
+  }
+  const j=J.join('');
+  T(5,'jumbled = "".join(letters) → "'+j+'"',J);T(6,'print(jumbled.upper()) → '+j.toUpperCase(),J);
+  return[true,{w:word,j}];
+ }},
+{name:'String magic',badge:'string methods',concept:'String methods return a NEW string — chain them to transform text.',type:'text',
+ init:{vars:[['msg','"  nohtyP si NUF  "']],target:'FUN IS PYTHON'},
+ story:'🕵️ <b>Level 6.</b> A spy sent a messy message: extra spaces, written backwards, and not shouting loud enough. Chain three <b>string methods</b> to turn it into the 🎯 target. Watch each step\'s value appear on the left!',
+ code:['msg = "  nohtyP si NUF  "','step1 = msg{0}','step2 = step1{1}','step3 = step2{2}','print(step3)'],
+ opts:Array(3).fill(['.strip()','.upper()','.lower()','[::-1]','.title()','.split()']),
+ hint:'Three jobs: remove the extra spaces (.strip()), flip the text backwards ([::-1]) and make it all capitals (.upper()). The order barely matters — check each step\'s value.',
+ learn:'Strings are <b>immutable</b>: <code>.strip()</code>, <code>.upper()</code> and friends never change the original, they <i>return a new string</i>, so you can chain them. <code>[::-1]</code> reverses any sequence. <code>.split()</code> turns a string into a <b>list</b>, which has different methods — that is why chaining it with <code>.upper()</code> crashes.',
+ run:(v,s)=>{
+  const T='FUN IS PYTHON',rp=x=>Array.isArray(x)?'['+x.map(a=>"'"+a+"'").join(', ')+']':"'"+x+"'";
+  const OP={'.strip()':x=>x.trim(),'.upper()':x=>x.toUpperCase(),'.lower()':x=>x.toLowerCase(),'.title()':x=>x.toLowerCase().replace(/\b[a-z]/g,c=>c.toUpperCase()),'.split()':x=>x.trim().split(/\s+/).filter(Boolean)};
+  let val='  nohtyP si NUF  ';const vars=[['msg',JSON.stringify(val)]];
+  const E=(l,m)=>s.ev.push({l,m,vars:vars.map(a=>[...a]),target:T});
+  E(0,'msg = '+rp(val));
+  for(let i=0;i<3;i++){
+   const op=v[i];
+   if(Array.isArray(val)&&op!=='[::-1]'){E(i+1,"❌ AttributeError: 'list' object has no attribute '"+op.slice(1,-2)+"'");return[false,'After <code>.split()</code> the value is a <b>list</b>, and lists have no <code>'+op+'</code>. Strings and lists have different methods.']}
+   val=op==='[::-1]'?(Array.isArray(val)?[...val].reverse():[...val].reverse().join('')):OP[op](val);
+   vars.push(['step'+(i+1),rp(val)]);
+   E(i+1,`step${i+1} = ${i?'step'+i:'msg'}${op} → ${rp(val)}`);
+  }
+  E(4,'print(step3) → '+(Array.isArray(val)?rp(val):val));
+  if(val===T)return[true];
+  return[false,Array.isArray(val)?'You ended with a list, not a string.':`It printed "${val}" but the target is "${T}". Read each step in the left panel — which job (spaces, direction, capitals) is still undone or done wrongly?`];
+ }},
+{name:'Slicing & f-strings',badge:'slicing & f-strings',concept:'Slicing cuts part of a string; f-strings build text from variables.',type:'text',
+ init:{vars:[['code','"PYTHON-3.12"']],target:'PYTHON version 3.12'},
+ story:'✂️ <b>Level 7.</b> A file label looks like <code>PYTHON-3.12</code>. Cut out the name and the version with <b>slicing</b> <code>text[start:stop]</code>, then glue them into a sentence with an <b>f-string</b>. Positions start at 0 — and negative numbers count from the END!',
+ code:['code = "PYTHON-3.12"','name = code[{0}]','version = code[{1}]','print(f"{name} version {version}")'],
+ opts:[[':6','7:','-4:','::-1'],['7:','-4:',':6','::2']],
+ hint:'"PYTHON" = the first 6 characters → [:6]. "3.12" = the last 4 characters → [-4:] (or everything from index 7 → [7:]).',
+ learn:'<code>text[:6]</code> = first 6 characters, <code>text[-4:]</code> = last 4, <code>text[7:]</code> = from index 7 to the end, <code>text[::-1]</code> = reversed. The <b>f-string</b> <code>f"{name} version {version}"</code> drops variable values straight into text — no <code>+</code> or <code>str()</code> needed.',
+ run:(v,s)=>{
+  const src='PYTHON-3.12',T='PYTHON version 3.12';
+  const sl=x=>x===':6'?src.slice(0,6):x==='7:'?src.slice(7):x==='-4:'?src.slice(-4):x==='::-1'?[...src].reverse().join(''):[...src].filter((c,i)=>i%2===0).join('');
+  const vars=[['code','"'+src+'"']],E=(l,m)=>s.ev.push({l,m,vars:vars.map(a=>[...a]),target:T});
+  E(0,'code = "'+src+'"');
+  const n=sl(v[0]);vars.push(['name','"'+n+'"']);E(1,`name = code[${v[0]}] → "${n}"`);
+  const ver=sl(v[1]);vars.push(['version','"'+ver+'"']);E(2,`version = code[${v[1]}] → "${ver}"`);
+  const out=n+' version '+ver;E(3,'print(f"{name} version {version}") → '+out);
+  return out===T?[true]:[false,`The sentence is "${out}" but should be "${T}". Look at the values of <code>name</code> and <code>version</code> — which slice gives each part?`];
+ }},
+{name:'Lists & dicts',badge:'Lists & dicts',concept:'A list holds items in order; a dictionary looks things up by key.',type:'arena',
+ story:'⚔️ <b>Level 8.</b> Monster notes: 👺 goblins fear <b>fire</b>, 👻 ghosts hate <b>light</b>, 🐲 dragons freeze with <b>ice</b>. Fill the <b>dictionary</b> (monster → weakness) and let the loop fight all monsters in the <b>list</b>.',
+ code:['weakness = {','    "goblin": {0},','    "ghost": {1},','    "dragon": {2}','}','monsters = ["goblin", "ghost", "dragon"]','for monster in monsters:','    attack(weakness[monster])'],
+ opts:Array(3).fill(['"fire"','"ice"','"light"','"water"']),
+ hint:'Goblin → "fire", ghost → "light", dragon → "ice".',
+ learn:'A <b>list</b> <code>[...]</code> keeps items in order and a <code>for</code> loop can visit each one. A <b>dictionary</b> <code>{key: value}</code> stores pairs: <code>weakness["ghost"]</code> returns <code>"light"</code>.',
+ run:(v,s)=>{const W={goblin:v[0],ghost:v[1],dragon:v[2]},need={goblin:'fire',ghost:'light',dragon:'ice'},ar=[0,0,0];
+  s.ev.push({l:5,m:'monsters = ["goblin", "ghost", "dragon"]',ar:[...ar]});
+  MON.forEach((m,i)=>{s.ev.push({l:6,m:'monster = "'+m.k+'"',ar:[...ar],cur:i});
+   const w=W[m.k].replace(/"/g,''),hit=w===need[m.k];ar[i]=hit?1:2;
+   s.ev.push({l:7,m:`weakness["${m.k}"] → "${w}" → ${hit?'HIT! 💥':'no effect 😤'}`,ar:[...ar],cur:i})});
+  return ar.every(a=>a===1)?[true]:[false,'Some monsters shrugged it off. Re-read the monster notes and match each key to its weakness.']}},
+{name:'The Alibi',badge:'pandas filtering',concept:'Filter a DataFrame with True/False conditions joined by & (AND) and | (OR).',type:'board',init:{f:{}},
+ story:'🕵️ <b>FINAL CASE · Level 9.</b> The Moonstone vanished from the museum! Eight people are in the log (a pandas <b>DataFrame</b>). Three witnesses gave clues:<br>① The thief <b>left after 9:30 PM</b> (<code>exit_min</code> above 30)<br>② The thief <b>had a keycard</b><br>③ The thief was seen in the <b>Gallery</b><br>Write a <b>filter</b> that clears every innocent person — until exactly one suspect is left. Arrest the wrong person and the real thief walks free!',
+ code:['import pandas as pd','df = pd.read_csv("museum_log.csv")','late = df["exit_min"] {0} {1}','keyed = df["keycard"] == {2}','inroom = df["room"] == {3}','suspects = df[late {4} keyed {5} inroom]','print(suspects)'],
+ opts:[['>','<','=='],['20','30','40'],['True','False'],['"Gallery"','"Archive"','"Vault"','"Lobby"'],['&','|'],['&','|']],
+ hint:'Clue ① → exit_min > 30. Clue ② → keycard == True. Clue ③ → room == "Gallery". The thief must match ALL three clues, so join them with & (AND), not | (OR).',
+ learn:'A comparison like <code>df["exit_min"] &gt; 30</code> makes a column of True/False values (a <b>boolean mask</b>). Join masks with <code>&amp;</code> (AND — stricter, fewer rows) or <code>|</code> (OR — looser, more rows), then <code>df[mask]</code> keeps only the rows where the mask is True. Python evaluates <code>&amp;</code> before <code>|</code>, so use brackets when mixing them. This is exactly how analysts filter real datasets.',
+ run:(v,s)=>{
+  const op=v[0],th=+v[1],kv=v[2]==='True',rm=v[3].replace(/"/g,''),o1=v[4],o2=v[5];
+  const late=PPL.map(p=>op==='>'?p[2]>th:op==='<'?p[2]<th:p[2]===th),keyed=PPL.map(p=>p[3]===kv),inroom=PPL.map(p=>p[1]===rm);
+  const f={},E=(l,m)=>s.ev.push({l,m,f:{...f}}),n=a=>a.filter(Boolean).length;
+  E(0,'import pandas as pd → pandas ready');E(1,'df = pd.read_csv("museum_log.csv") → 8 rows loaded');
+  f.late=late;E(2,`late = df["exit_min"] ${op} ${th} → ${n(late)} True, ${8-n(late)} False`);
+  f.keyed=keyed;E(3,`keyed = df["keycard"] == ${v[2]} → ${n(keyed)} True, ${8-n(keyed)} False`);
+  f.inroom=inroom;E(4,`inroom = df["room"] == ${v[3]} → ${n(inroom)} True, ${8-n(inroom)} False`);
+  const comb=(a,b,c)=>o1==='&'&&o2==='|'?(a&&b)||c:o1==='|'&&o2==='&'?a||(b&&c):o1==='&'?a&&b&&c:a||b||c;
+  const fin=PPL.map((p,i)=>comb(late[i],keyed[i],inroom[i])),left=PPL.filter((p,i)=>fin[i]).map(p=>p[0]);
+  f.fin=fin;E(5,`suspects = df[late ${o1} keyed ${o2} inroom] → ${left.length} row(s) kept`);
+  E(6,'print(suspects) → '+(left.join(', ')||'Empty DataFrame'));
+  const honest=op==='>'&&kv&&rm==='Gallery'&&o1==='&'&&o2==='&';
+  if(left.length===1&&left[0]==='Leo'&&honest)return[true,' · 🔒 Leo is arrested!'];
+  if(left.length===1&&left[0]==='Leo')return[false,'⚖️ Leo is the only row left, but your filter does not follow the witness clues (after 9:30, has a keycard, in the Gallery — all joined with <code>&amp;</code>). Evidence built on a lucky trick would not hold up in court. Rebuild it from the clues.'];
+  if(!left.length)return[false,'😶 <b>Empty DataFrame</b> — nobody matches. Your conditions contradict each other or do not fit the witness clues. Compare each condition with clues ①②③.'];
+  if(left.length>1)return[false,`🚨 ${left.length} suspects remain: <b>${left.join(', ')}</b>. A detective needs exactly one. ${(o1==='|'||o2==='|')?'<code>|</code> means OR — it keeps anyone who matches <i>any</i> clue. Use <code>&amp;</code> so that <i>every</i> clue must be true.':'Tighten a condition — compare the remaining names with the witness clues.'}`];
+  return[false,`You arrested <b>${left[0]}</b> — but they do not match all three witness clues. The real thief escapes! Re-read the clues and fix a condition.`];
+ }}
+];
+
+/* ---- game state ---- */
+let cur=0,unlocked=0,runs=0,best=LV.map(()=>0),timers=[],playing=false;
+function dots(){
+ $('dots').innerHTML=LV.map((l,i)=>`<div class="dot ${i===cur?'on':''}" onclick="go(${i})">${i+1}. ${l.name} ${best[i]?'⭐'.repeat(best[i]):''}</div>`).join('');
+ $('tot').textContent='⭐ '+best.reduce((a,b)=>a+b,0)+' / '+LV.length*3;
+}
+const ICO=['🤖','📦','🔁','🧠','🎲','🔤','✂️','⚔️','🕵️'];
+function menu(){
+ timers.forEach(clearTimeout);timers=[];playing=false;
+ $('play').style.display='none';$('end').style.display='none';$('menu').style.display='block';
+ $('mgrid').innerHTML=LV.map((l,i)=>`<div class="mcard ${i===LV.length-1?'final':''}" onclick="go(${i})"><div class="ic">${ICO[i]||'🎮'}</div><b>${i+1}. ${l.name}</b>${i===LV.length-1?' <span class="tag">FINAL CASE</span>':''}<div class="muted" style="font-size:.85rem;margin-top:4px">${l.concept}</div><div class="st">${best[i]?'⭐'.repeat(best[i]):'☆ not played yet'}</div></div>`).join('');
+ dots();
+}
+function go(i){if(playing)return;cur=i;load()}
+function load(){
+ const L=LV[cur];runs=0;
+ $('play').style.display='grid';$('end').style.display='none';$('menu').style.display='none';
+ $('story').innerHTML=L.story;$('lt').textContent='Level '+(cur+1)+' · '+L.name;$('concept').textContent='Concept: '+L.concept;
+ $('code').innerHTML=L.code.map((t,i)=>{
+  let h=esc(t).replace(/\b(for|in|if|else|range)\b/g,'<span class="kw">$1</span>');
+  h=h.replace(/\{(\d)\}/g,(m,k)=>`<select data-k="${k}"><option value="">???</option>${L.opts[+k].map(o=>`<option value="${esc(o)}">${esc(o)}</option>`).join('')}</select>`);
+  return `<div class="ln" data-l="${i}"><span class="n">${i+1}</span>${h}</div>`}).join('');
+ $('msg').innerHTML='';resetStage();dots();
+}
+function resetStage(){
+ timers.forEach(clearTimeout);timers=[];playing=false;$('runB').disabled=false;
+ $('cons').innerHTML='';document.querySelectorAll('.ln').forEach(e=>e.classList.remove('hl'));
+ $('msg').innerHTML='';
+ draw(LV[cur].type==='grid'?{x:0,y:0,d:0,got:[]}:LV[cur].type==='word'?{tiles:[]}:LV[cur].init?LV[cur].init:{ar:[0,0,0]});
+}
+function draw(ev){
+ const L=LV[cur];
+ if(L.type==='board'){
+  const f=ev.f||{},mk=(a,i)=>a?(a[i]?'✅':'❌'):'·';
+  $('stage').innerHTML='<table class="board"><tr><th>name</th><th>room</th><th>exit_min</th><th>keycard</th><th>late</th><th>keyed</th><th>inroom</th><th>verdict</th></tr>'
+   +PPL.map((p,i)=>`<tr class="${f.fin?(f.fin[i]?'hot':'dim'):''}"><td>${p[0]}</td><td>${p[1]}</td><td>${p[2]}</td><td>${p[3]?'True':'False'}</td><td>${mk(f.late,i)}</td><td>${mk(f.keyed,i)}</td><td>${mk(f.inroom,i)}</td><td>${f.fin?(f.fin[i]?'🚨':'😇'):'❓'}</td></tr>`).join('')+'</table>';
+  return;
+ }
+ if(L.type==='text'){
+  $('stage').innerHTML='<div class="vars">'+ev.vars.map((a,i)=>`<div class="var ${i===ev.vars.length-1&&ev.vars.length>1?'new':''}"><span>${esc(a[0])}</span><b>${esc(a[1])}</b></div>`).join('')+'</div><div class="box" style="text-align:center">🎯 Target output: <b style="color:var(--mint)">'+esc(ev.target||L.init.target)+'</b></div>';
+  return;
+ }
+ if(L.type==='word'){
+  $('stage').innerHTML='<div class="arena" style="grid-template-columns:repeat(auto-fit,minmax(46px,1fr))">'+(ev.tiles.length?ev.tiles.map(t=>`<div class="mon"><div class="big" style="font-size:1.7rem">${t.toUpperCase()}</div></div>`).join(''):'<div class="muted" style="grid-column:1/-1;text-align:center;padding:24px">🧙 The spell book is empty — fill the slots and run your code!</div>')+'</div>';
+  return;
+ }
+ if(L.type==='arena'){
+  $('stage').innerHTML='<div class="arena">'+MON.map((m,i)=>`<div class="mon ${ev.ar[i]===1?'dead':ev.ar[i]===2?'res':''} ${ev.cur===i?'cur':''}"><div class="big">${m.e}</div><b>${m.n}</b><br><small>${['waiting…','💥 defeated!','😤 resisted'][ev.ar[i]]}</small></div>`).join('')+'</div>';
+  return;
+ }
+ let h='';
+ for(let y=0;y<6;y++)for(let x=0;x<6;x++){
+  const bot=ev.x===x&&ev.y===y;let c='';
+  if(bot)c='🤖<i>'+AR[ev.d]+'</i>';
+  else if(L.goal[0]===x&&L.goal[1]===y)c='🏁';
+  else if((L.stars||[]).some(a=>a[0]===x&&a[1]===y)&&!ev.got.includes(x+','+y))c='⭐';
+  h+=`<div class="c ${bot?'bot':''}">${c}</div>`;
+ }
+ $('stage').innerHTML='<div class="g">'+h+'</div>';
+}
+function say(t,cls){$('msg').innerHTML=`<div class="box ${cls||''}">${t}</div>`}
+function hint(){say('💡 '+LV[cur].hint)}
+function run(){
+ if(playing)return;
+ const v=[...document.querySelectorAll('#code select')].map(x=>x.value);
+ if(v.some(x=>!x)){say('Fill every <b>???</b> slot in the code first.','bad');return}
+ resetStage();runs++;playing=true;$('runB').disabled=true;$('msg').innerHTML='';
+ const L=LV[cur],s=sim(L),res=L.run(v,s,L),gap=+$('spd').value;
+ s.ev.forEach((e,i)=>timers.push(setTimeout(()=>{
+  draw(e);
+  document.querySelectorAll('.ln').forEach(n=>n.classList.toggle('hl',+n.dataset.l===e.l));
+  const c=$('cons');c.innerHTML+=esc(e.m)+'<br>';c.scrollTop=c.scrollHeight;
+ },i*gap)));
+ timers.push(setTimeout(()=>{
+  playing=false;$('runB').disabled=false;
+  document.querySelectorAll('.ln').forEach(n=>n.classList.remove('hl'));
+  res[0]?(L.type==='word'?wordGame(res[1].w,res[1].j):win(res[1])):say('❌ '+res[1],'bad');
+ },s.ev.length*gap+150));
+}
+function win(extra){
+  // HUB INTEGRATION: send cumulative campaign stars to the parent dashboard.
+  // The hub validates the message origin and records this as a score snapshot.
+  try {
+    const nextBest = [...best];
+    const levelStars = runs===1?3:runs<=3?2:1;
+    nextBest[cur] = Math.max(nextBest[cur] || 0, levelStars);
+    window.parent.postMessage({
+      type: 'GAME_SCORE',
+      gameId: 'coding-via-gaming',
+      score: nextBest.reduce((sum, value) => sum + value, 0),
+      maxScore: LV.length * 3,
+      level: cur + 1,
+      detail: 'Completed level: ' + LV[cur].name
+    }, window.location.origin);
+  } catch (e) { console.warn('Could not send score to hub', e); }
+
+ const st=runs===1?3:runs<=3?2:1;best[cur]=Math.max(best[cur],st);
+ unlocked=Math.max(unlocked,Math.min(cur+1,LV.length-1));dots();
+ say(`🎉 <b>Level complete!</b> ${'⭐'.repeat(st)}${extra||''}<br><br><b>What you just learned:</b> ${LV[cur].learn}<div class="row"><button onclick="next()">${cur<LV.length-1?'NEXT LEVEL →':'FINISH 🏆'}</button></div>`,'good');
+}
+let WG={};
+function tiles(arr,dis){return arr.map((c,i)=>`<button class="sec" ${dis&&dis(i)?'disabled':''} onclick="wTap(${i})" style="font-size:1.2rem;min-width:44px">${c.toUpperCase()}</button>`).join('')}
+function wRender(fbk){
+ const {w,j,a}=WG;
+ $('msg').innerHTML=`<div class="box"><b>🧩 Round ${WG.r}/3</b> <span class="pill" style="font-size:.8rem">✨ Spell power ${WG.pts}</span>
+ <div style="margin:8px 0">Clue: <b>${WORDS[w]}</b></div>
+ <div class="row">${tiles([...j],i=>a.includes(i))}</div>
+ <div style="font-size:1.6rem;letter-spacing:6px;margin:8px 0;min-height:36px">${a.map(i=>j[i].toUpperCase()).join('')||'_ '.repeat(w.length)}</div>
+ <div class="row"><button onclick="wCheck()">CHECK</button><button class="sec" onclick="WG.a.pop();wRender()">⌫</button>
+ <button class="sec" onclick="wHint(0)">💡 word[0]</button><button class="sec" onclick="wHint(2)">💡 word[:2]</button><button class="sec" onclick="wHint(1)">💡 len(word)</button></div>
+ <div class="muted" style="font-size:.8rem;margin-top:6px">Each different clue costs 25 spell power.</div>
+ <div style="margin-top:8px">${fbk||''}</div></div>`;
+}
+function wordGame(w,j){WG={w,j,a:[],r:1,pts:0,used:[w],hu:[]};wRender('Tap the letters in the right order. Stuck? Use a string tool for a clue.')}
+function wTap(i){if(!WG.a.includes(i)){WG.a.push(i);wRender()}}
+function wlog(t){const c=$('cons');c.innerHTML+=esc(t)+'<br>';c.scrollTop=c.scrollHeight}
+function wHint(k){
+ if(!WG.hu.includes(k))WG.hu.push(k);
+ if(k===0){wlog("word[0] → '"+WG.w[0]+"'");wRender('First letter: <b>'+WG.w[0].toUpperCase()+'</b>  (<code>word[0]</code>)')}
+ else if(k===2){wlog("word[:2] → '"+WG.w.slice(0,2)+"'");wRender('First two letters: <b>'+WG.w.slice(0,2).toUpperCase()+'</b>  (<code>word[:2]</code> — a slice!)')}
+ else{wlog('len(word) → '+WG.w.length);wRender('The word has <b>'+WG.w.length+'</b> letters  (<code>len(word)</code>)')}
+}
+function wCheck(){
+ const g=WG.a.map(i=>WG.j[i]).join('');
+ if(g.length<WG.w.length){wRender('Use all the letters first.');return}
+ wlog('guess == word → '+(g===WG.w?'True':'False'));
+ if(g!==WG.w){WG.a=[];wRender('❌ <code>guess == word</code> is <b>False</b>. Try another order!');return}
+ const p=Math.max(0,100-25*WG.hu.length);WG.pts+=p;
+ if(WG.r>=3){win(' · ✨ Spell power '+WG.pts);return}
+ WG.r++;WG.note='✅ Correct! +'+p+' power. The wizard recasts your spell…';wCast();
+}
+function wCast(){
+ const pool=Object.keys(WORDS).filter(x=>!WG.used.includes(x)),w=pool[Math.floor(Math.random()*pool.length)];
+ WG.used.push(w);let J;do{J=shuf([...w])}while(J.join('')===w);
+ WG.w=w;WG.j=J.join('');WG.a=[];WG.hu=[];
+ wlog('word = random.choice(words) → "'+w+'"');wlog('random.shuffle(letters) → "'+WG.j+'"');
+ let n=0;
+ const t=setInterval(()=>{
+  n++;
+  if(n>9){clearInterval(t);draw({tiles:[...WG.j]});wRender('Fresh jumble — go!');return}
+  $('msg').innerHTML=`<div class="box">${WG.note}<div class="row">${shuf([...w]).map(c=>`<button class="sec" disabled style="font-size:1.2rem;min-width:44px">${c.toUpperCase()}</button>`).join('')}</div>🪄 casting…</div>`;
+ },90);
+ timers.push(t);
+}
+function next(){if(cur<LV.length-1){cur++;load()}else finish()}
+function finish(){
+ $('play').style.display='none';$('menu').style.display='none';const e=$('end');e.style.display='block';
+ const t=best.reduce((a,b)=>a+b,0);
+ e.innerHTML=`<div style="text-align:center"><div style="font-size:3.4rem">🏆</div><h2>Quest complete! ${t}/${LV.length*3} ⭐</h2>
+ <p>You just used the core building blocks of every Python program:</p>
+ <div class="badges">${LV.map(l=>`<span class="pill">✅ ${l.badge}</span>`).join('')}</div>
+ <pre style="text-align:left;display:inline-block;background:#050a19;border:1px solid #2a416b;border-radius:10px;padding:12px;color:#a5f3fc">distance = 3                 # variable
+for i in range(4):           # loop
+    if wall_ahead():         # decision
+        turn_right()
+weakness = {"ghost": "light"}   # dictionary
+monsters = ["goblin", "ghost"]  # list
+random.shuffle(letters)         # random
+msg.strip()[::-1].upper()       # string methods
+code[-4:]                       # slicing
+df[(df["exit_min"] > 30) & (df["keycard"] == True)]   # pandas filter</pre>
+ <div class="row" style="justify-content:center"><button onclick="best=LV.map(()=>0);cur=0;load()">PLAY AGAIN ↻</button><button class="sec" onclick="menu()">☰ ALL LEVELS</button></div></div>`;
+ dots();
+}
+menu();
+</script></body></html>

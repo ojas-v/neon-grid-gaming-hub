@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#080b14">
+  <title>NEON GRID // Gaming Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles.css">
+  <!-- Supabase JS v2 CDN. The app also works in local-demo mode before configuration. -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script defer src="./app.js"></script>
+</head>
+<body>
+  <div class="grid-overlay" aria-hidden="true"></div>
+  <div class="scanline" aria-hidden="true"></div>
+
+  <header class="topbar">
+    <a class="brand" href="#" aria-label="Neon Grid home">
+      <span class="brand-mark">N<span>G</span></span>
+      <span class="brand-copy"><strong>NEON GRID</strong><small>PLAYER OPERATIONS SYSTEM</small></span>
+    </a>
+    <div class="topbar-right">
+      <span class="system-status"><i></i><span id="connectionLabel">LOCAL DEMO MODE</span></span>
+      <button class="button button-quiet" id="changePlayerBtn" type="button">CHANGE PLAYER</button>
+    </div>
+  </header>
+
+  <main class="shell">
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow"><span class="eyebrow-line"></span> NETWORK STATUS // OPERATIONAL</p>
+        <h1>YOUR NEXT<br><span>MISSION</span> STARTS HERE.</h1>
+        <p class="hero-description">Enter the simulation. Solve the system. Leave your mark on the leaderboard.</p>
+        <div class="hero-actions">
+          <button class="button button-primary" id="heroLaunchBtn" type="button">RESUME OPERATIONS <span>↗</span></button>
+          <span class="microcopy">02 SYSTEMS AVAILABLE <b>·</b> PROGRESS SAVED</span>
+        </div>
+      </div>
+      <div class="hero-visual" aria-label="Abstract futuristic network visualization">
+        <div class="orb orb-one"></div><div class="orb orb-two"></div>
+        <div class="orbit orbit-a"></div><div class="orbit orbit-b"></div>
+        <div class="core"><span>NG</span><small>CORE ONLINE</small></div>
+        <span class="visual-label label-a">SIGNAL // 98.4%</span>
+        <span class="visual-label label-b">NODE_09 // READY</span>
+        <span class="visual-label label-c">LATENCY // 12MS</span>
+      </div>
+    </section>
+
+    <section class="welcome-row">
+      <div>
+        <p class="eyebrow">IDENTITY VERIFIED</p>
+        <h2 id="welcomeTitle">Welcome, Agent <span>Guest</span></h2>
+        <p id="welcomeSubtitle" class="muted">Your next run is waiting. Choose a system to begin.</p>
+      </div>
+      <div class="player-chip"><span class="avatar" id="playerAvatar">G</span><div><small>ACTIVE PLAYER</small><strong id="playerNameLabel">Guest</strong></div><span class="chip-dot"></span></div>
+    </section>
+
+    <section class="section-block" id="games">
+      <div class="section-heading"><div><p class="eyebrow">AVAILABLE SIMULATIONS</p><h2>SELECT YOUR <span>GAME</span></h2></div><span class="section-count">02 / 02</span></div>
+      <div class="game-grid">
+        <article class="game-card card-coding">
+          <div class="card-top"><span class="game-index">SYS_01</span><span class="status-tag"><i></i> ONLINE</span></div>
+          <div class="game-art art-code" aria-hidden="true"><span class="art-glyph">{ }</span><span class="art-orbit"></span><span class="art-cross">+</span><span class="art-code-line line-one">0101 // LOGIC</span><span class="art-code-line line-two">if (signal) { run(); }</span></div>
+          <div class="game-info">
+            <p class="game-category">PROGRAMMING / LOGIC</p>
+            <h3>Coding via Gaming</h3>
+            <p class="game-description">Master programming logic through interactive arcade challenges.</p>
+            <div class="score-strip"><div><small>PERSONAL HIGH SCORE</small><strong id="codingHighScore">—</strong></div><span class="score-icon">✦</span></div>
+            <button class="button button-primary launch-button" data-game="coding-via-gaming" type="button">LAUNCH SYSTEM <span>↗</span></button>
+          </div>
+        </article>
+
+        <article class="game-card card-pipeline">
+          <div class="card-top"><span class="game-index">SYS_02</span><span class="status-tag"><i></i> ONLINE</span></div>
+          <div class="game-art art-pipeline" aria-hidden="true"><div class="pipe-node node-a"></div><div class="pipe-node node-b"></div><div class="pipe-node node-c"></div><div class="pipe-path path-a"></div><div class="pipe-path path-b"></div><div class="pipe-path path-c"></div><span class="pipeline-code">DATA_FLOW :: K9</span></div>
+          <div class="game-info">
+            <p class="game-category">DATA SYSTEMS / DEBUGGING</p>
+            <h3>Pipeline Quest <span class="subtitle-title">— Kestrel 9</span></h3>
+            <p class="game-description">Solve data-pipelining puzzles and debug atmospheric data flows.</p>
+            <div class="score-strip"><div><small>PERSONAL HIGH SCORE</small><strong id="pipelineHighScore">—</strong></div><span class="score-icon">✦</span></div>
+            <button class="button button-primary launch-button" data-game="pipeline-quest" type="button">INITIALIZE PIPELINE <span>↗</span></button>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="stats-grid">
+      <article class="stat-card"><span class="stat-label">TOTAL RUNS</span><strong id="totalRuns">00</strong><span class="stat-foot">ALL SYSTEMS</span></article>
+      <article class="stat-card"><span class="stat-label">SYSTEMS PLAYED</span><strong id="systemsPlayed">00<span>/02</span></strong><span class="stat-foot">UNIQUE GAMES</span></article>
+      <article class="stat-card"><span class="stat-label">BEST OVERALL</span><strong id="bestOverall">00</strong><span class="stat-foot">PERSONAL RECORD</span></article>
+      <article class="stat-card stat-card-accent"><span class="stat-label">AGENT RANK</span><strong id="agentRank">ROOKIE</strong><span class="stat-foot">BASED ON YOUR BEST RUN</span></article>
+    </section>
+
+    <section class="section-block history-section">
+      <div class="section-heading"><div><p class="eyebrow">PLAYER TELEMETRY</p><h2>RUN <span>HISTORY</span></h2></div><button class="button button-quiet" id="refreshHistoryBtn" type="button">↻ REFRESH</button></div>
+      <div class="history-panel">
+        <div class="history-toolbar"><span>RECENT ACTIVITY</span><span id="historyCount">0 RECORDS</span></div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>GAME</th><th>RESULT</th><th>DETAIL</th><th>TIMESTAMP</th></tr></thead>
+            <tbody id="historyBody"><tr><td colspan="4" class="empty-state">Enter your Player Tag to initialize your profile.</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer"><span>NEON GRID <b>v1.0</b></span><span>PLAY SMART. BUILD BETTER SYSTEMS.</span><span id="saveStatus">LOCAL PROGRESS ENABLED</span></footer>
+  </main>
+
+  <div class="modal-backdrop" id="loginModal" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
+    <form class="login-modal" id="loginForm">
+      <div class="modal-emblem">NG<span>_</span></div>
+      <p class="eyebrow">NEW SESSION DETECTED</p>
+      <h2 id="loginTitle">IDENTIFY <span>YOURSELF</span></h2>
+      <p class="muted">Choose a Player Tag. Your progress will be associated with this profile on this device.</p>
+      <label for="playerTag">PLAYER TAG</label>
+      <input id="playerTag" name="playerTag" type="text" maxlength="24" minlength="2" autocomplete="nickname" placeholder="e.g. NOVA_07" required>
+      <p class="form-note">2–24 characters. Letters, numbers, spaces, underscores and hyphens.</p>
+      <button class="button button-primary full-button" type="submit">INITIALIZE PROFILE <span>↗</span></button>
+      <p class="privacy-note">No password is needed for this demo. Cloud saves require the project owner to configure Supabase.</p>
+    </form>
+  </div>
+
+  <div class="game-overlay" id="gameOverlay" aria-hidden="true">
+    <div class="game-overlay-bar"><div><span class="overlay-dot"></span><strong id="overlayGameTitle">SYSTEM RUNNING</strong><small>EMBEDDED GAME SESSION</small></div><button class="button button-quiet" id="returnHubBtn" type="button">← RETURN TO HUB</button></div>
+    <iframe id="gameFrame" title="Selected game" allow="fullscreen" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
