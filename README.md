@@ -157,7 +157,7 @@ Run Neon Grid locally before making changes or deploying your own version.
 Replace the repository URL below with the HTTPS URL of this GitHub repository.
 
 ```bash
-git clone </github.com/ojas-v/neon-grid-gaming-hub>
+git clone https://github.com/ojas-v/neon-grid-gaming-hub.git
 cd neon-grid-gaming-hub
 ```
 
@@ -395,3 +395,12 @@ No license is specified here. Before accepting contributions or inviting others 
   <strong>NEON GRID</strong><br>
   <em>Plug in. Play on. Leave your mark.</em>
 </p>
+
+---
+
+## 📚 Pipeline Quest: learning design and evidence
+
+- [Learning objectives, concept map and playtest results](docs/README_PIPELINE_QUEST.md)
+- [Playtest kit: recruiting message, pre/post test, feedback form](docs/PLAYTEST_KIT.md)
+- Per-level telemetry: run `supabase-telemetry.sql` once in the Supabase SQL Editor.
+- Smoke test: `npm i jsdom && node tests/smoke.js`

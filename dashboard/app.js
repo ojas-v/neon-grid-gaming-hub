@@ -267,11 +267,32 @@ function closeGame() {
   currentGameId = null;
   refreshDashboard();
 }
+async function logGameEvent(m) {
+  if (!cloudClient || !cloudUserId) return;                       // local demo mode: skip silently
+  if (!["level_start", "level_clear"].includes(m.event)) return;  // ignore anything unexpected
+  const int = (v, max) => (Number.isFinite(Number(v)) ? Math.max(0, Math.min(max, Math.round(Number(v)))) : null);
+  const { error } = await cloudClient.from("game_events").insert({
+    player_id: cloudUserId,
+    game_id: m.gameId,
+    session_id: String(m.sid || "").slice(0, 16),
+    event: m.event,
+    level: Math.max(1, Math.min(20, Math.round(Number(m.level) || 1))),
+    mistakes: int(m.mistakes, 10000),
+    duration_ms: int(m.ms, 86400000),
+    meta: m.meta && typeof m.meta === "object" ? m.meta : null
+  });
+  if (error) console.warn("telemetry insert failed:", error.message);
+}
 function handleGameMessage(event) {
   // Only accept messages from the same origin and the currently opened iframe.
   if (event.origin !== window.location.origin) return;
   if (event.source !== $("gameFrame").contentWindow) return;
   const data = event.data;
+  // Per-level telemetry from games (used for playtest evidence). Never blocks gameplay.
+  if (data && data.type === "GAME_EVENT") {
+    if (currentGameId && data.gameId === currentGameId) logGameEvent(data).catch((e) => console.warn("telemetry failed:", e));
+    return;
+  }
   if (!data || data.type !== "GAME_SCORE") return;
   if (!currentGameId || data.gameId !== currentGameId) return;
   saveScore({
