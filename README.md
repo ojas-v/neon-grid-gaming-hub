@@ -226,6 +226,13 @@ Anonymous authentication provides an authenticated user ID without requiring an 
 
 Open `dashboard/app.js` and locate the Supabase configuration constants:
 
+
+Anonymous authentication provides an authenticated user ID without requiring an email-based registration flow. It does not, by itself, provide account recovery or a permanent identity across browsers and devices.
+
+### 3. Configure the frontend
+
+Open `dashboard/app.js` and locate the Supabase configuration constants:
+
 ```javascript
 const SUPABASE_URL = "";
 const SUPABASE_ANON_KEY = "";
